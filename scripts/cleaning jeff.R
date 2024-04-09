@@ -7,6 +7,7 @@ data <- read.csv(here("data", "TMS_dataset_Vaud_20240202_15.03Extract.csv"), sep
 library(ggplot2)
 library(dplyr)
 library(plotly)
+library(tidyr)
 
 # Create an aggregated data frame of spendings with new category names
 spending_data <- data.frame(
@@ -132,5 +133,38 @@ ggplot(filtered_data, aes(x = F05_02.ENG, y = F81_Total, fill = Continent)) +
 
 
 
-When are their period of spendings and for which sector is it most relevant?
-Which commune gets the most spendings?
+#When are their period of spendings and for which sector is it most relevant?
+#Which commune gets the most spendings?
+# Assuming 'data' is your data.frame
+# Reshape data from wide to long format
+long_data <- pivot_longer(data, cols = starts_with("F81"), names_to = "Variable", values_to = "Value")
+
+# Scatter Plot
+ggplot(long_data, aes(x = Value, y = F105, color = Variable)) + 
+  geom_point() +
+  facet_wrap(~ Variable, scales = "free") +
+  theme_minimal() +
+  labs(title = "Scatter Plots of F81_01 to F81_06 against F105", x = "Variable Value", y = "F105")
+
+# Boxplot
+ggplot(long_data, aes(x = Variable, y = F105, fill = Variable)) + 
+  geom_boxplot() +
+  theme_minimal() +
+  labs(title = "Boxplots of F81_01 to F81_06 against F105", x = "Variable", y = "F105")
+
+# Assuming 'data' is your dataframe
+# First, calculate mean and standard deviation for F105 for the normal distribution curve
+mean_F105 <- mean(data$F105, na.rm = TRUE)
+sd_F105 <- sd(data$F105, na.rm = TRUE)
+
+# Reshape data from wide to long format
+long_data <- pivot_longer(data, cols = starts_with("F81"), names_to = "Variable", values_to = "Value")
+
+# Plot with overlaying normal distribution for F105
+ggplot(long_data, aes(x = Value)) + 
+  geom_density(aes(fill = Variable), alpha = 0.5) +  # Density plots for F81 variables
+  geom_density(data = data, aes(x = F105), color = "black", linetype = "dashed") +  # Density plot for F105
+  stat_function(fun = dnorm, args = list(mean = mean_F105, sd = sd_F105), color = "red", linetype = "dotdash") +  # Normal distribution curve
+  facet_wrap(~ Variable, scales = "free") +
+  theme_minimal() +
+  labs(title = "Density Plots with Normal Distribution for F105", x = "Value", y = "Density")
