@@ -105,6 +105,16 @@ ggplot(currency_counts, aes(x = Currency, y = n, fill = Currency)) +
 
 
 
+
+
+
+
+
+
+
+# Jeff - Q1: Dépenses. Suivant d’où ils viennent, les dépenses effectuées par endroit et par secteur (nourriture, hôtel…) ainsi que quand durant l’année. 
+# Question 1: Looking at the nationalities, what are the expenses distributions and when during the year?
+
 ### Spending by Nationality (overall contribution)
 
 # Renaming the F05_01.ENG column to Continent and filtering the data
@@ -119,3 +129,8 @@ ggplot(filtered_data, aes(x = F05_02.ENG, y = F81_Total, fill = Continent)) +
   scale_fill_brewer(palette = "Set3") + # Adds a color palette for the continents
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = "bottom") # Moves the legend to the bottom
+
+
+
+When are their period of spendings and for which sector is it most relevant?
+Which commune gets the most spendings?
